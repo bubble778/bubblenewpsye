@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cognitive Game Lab</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f6f7f9;
+  color: #18212b;
+}
+
+.app {
+  max-width: 760px;
+  margin: auto;
+  padding: 24px 16px 40px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #68737d;
+  font-weight: 700;
+}
+
+h1 {
+  margin: 6px 0;
+}
+
+.muted {
+  color: #68737d;
+}
+
+.screen.hidden {
+  display: none;
+}
+
+.games {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.game-card {
+  min-height: 125px;
+  padding: 18px;
+  text-align: left;
+  border: 1px solid #dce1e6;
+  border-radius: 18px;
+  background: white;
+  cursor: pointer;
+}
+
+.game-card:hover {
+  border-color: #9ca7b3;
+}
+
+.game-card b {
+  display: block;
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+
+.game-card span {
+  color: #68737d;
+  font-size: 14px;
+}
+
+button {
+  font: inherit;
+}
+
+.primary,
+.secondary {
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid #dce1e6;
+  cursor: pointer;
+}
+
+.primary {
+  background: #e8edf3;
+  font-weight: 700;
+}
+
+.secondary {
+  background: white;
+}
+
+#profileBtn {
+  width: 100%;
+  margin-top: 14px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.topbar small {
+  display: block;
+  color: #68737d;
+  margin-top: 4px;
+}
+
+.panel {
+  background: white;
+  border: 1px solid #dce1e6;
+  border-radius: 20px;
+  padding: 22px;
+  text-align: center;
+}
+
+#arena {
+  min-height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 9px;
+  width: min(430px, 100%);
+  margin: 18px auto;
+}
+
+.tile {
+  aspect-ratio: 1;
+  border: 1px solid #dce1e6;
+  border-radius: 13px;
+  background: #fafbfc;
+  cursor: pointer;
+  font-size: 22px;
+  min-height: 55px;
+}
+
+.tile.active {
+  background: #dfe8f4;
+}
+
+.tile.correct {
+  background: #d7e8dc;
+}
+
+.tile.wrong {
+  opacity: .45;
+}
+
+.choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: min(430px, 100%);
+}
+
+.choice {
+  min-height: 55px;
+  border: 1px solid #dce1e6;
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+}
+
+#feedback {
+  min-height: 25px;
+  margin-top: 12px;
+}
+
+.score-list {
+  display: grid;
+  gap: 18px;
+}
+
+.score-row {
+  display: grid;
+  gap: 6px;
+}
+
+.score-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.bar {
+  height: 9px;
+  border-radius: 99px;
+  background: #edf0f3;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #8d99a6;
+}
+
+.note {
+  color: #68737d;
+  font-size: 12px;
+  margin-top: 24px;
+}
+
+@media (max-width: 560px) {
+  .games {
+    grid-template-columns: 1fr;
+  }
+
+  h1 {
+    font-size: 25px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+  <div class="eyebrow">COGNITIVE GAME LAB</div>
+  <h1>🧠 Cognitive Game Lab</h1>
+  <p class="muted">
+    Cognitive training game prototype
+  </p>
+</header>
+
+
+<!-- HOME -->
+
+<section id="home">
+
+  <div class="games">
+
+    <button class="game-card" data-game="memory">
+      <b>🧠 Working Memory</b>
+      <span>จำตำแหน่งตามลำดับ</span>
+    </button>
+
+    <button class="game-card" data-game="attention">
+      <b>👀 Selective Attention</b>
+      <span>หาเป้าหมายท่ามกลางตัวรบกวน</span>
+    </button>
+
+    <button class="game-card" data-game="inhibition">
+      <b>🚫 Inhibition</b>
+      <span>Go / No-Go</span>
+    </button>
+
+    <button class="game-card" data-game="flexibility">
+      <b>🔄 Cognitive Flexibility</b>
+      <span>สลับกฎการตอบ</span>
+    </button>
+
+  </div>
+
+  <button id="profileButton" class="secondary" style="width:100%;margin-top:14px">
+    📊 Cognitive Profile
+  </button>
+
+</section>
+
+
+<!-- GAME -->
+
+<section id="gameScreen" class="screen hidden">
+
+  <div class="topbar">
+
+    <button id="backButton" class="secondary">
+      ← เมนู
+    </button>
+
+    <div style="text-align:right">
+      <b id="gameTitle"></b>
+      <small>
+        Level <span id="level">1</span>
+        · Trial <span id="trial">0</span>/8
+      </small>
+    </div>
+
+  </div>
+
+
+  <div class="panel">
+
+    <div id="instruction" class="muted">
+      พร้อมแล้ว
+    </div>
+
+    <div id="arena"></div>
+
+    <button id="startRound" class="primary">
+      เริ่มรอบ
+    </button>
+
+    <div id="feedback"></div>
+
+  </div>
+
+</section>
+
+
+<!-- PROFILE -->
+
+<section id="profileScreen" class="screen hidden">
+
+  <div class="topbar">
+
+    <h2>Cognitive Profile</h2>
+
+    <button id="homeButton" class="secondary">
+      ← เมนู
+    </button>
+
+  </div>
+
+  <div id="scores" class="score-list"></div>
+
+  <p class="note">
+    คะแนนนี้เป็น performance จากเกมเท่านั้น
+    ไม่ใช่ IQ test และไม่ใช่ผลวินิจฉัยทางคลินิก
+  </p>
+
+</section>
+
+</div>
+
+
+<script>
+
+const home =
+document.getElementById("home");
+
+const gameScreen =
+document.getElementById("gameScreen");
+
+const profileScreen =
+document.getElementById("profileScreen");
+
+const arena =
+document.getElementById("arena");
+
+const instruction =
+document.getElementById("instruction");
+
+const feedback =
+document.getElementById("feedback");
+
+const levelDisplay =
+document.getElementById("level");
+
+const trialDisplay =
+document.getElementById("trial");
+
+const gameTitle =
+document.getElementById("gameTitle");
+
+const startButton =
+document.getElementById("startRound");
+
+
+let currentGame = "";
+
+let level = 1;
+
+let trial = 0;
+
+let correct = 0;
+
+let total = 0;
+
+let sequence = [];
+
+let sequencePosition = 0;
+
+let active = false;
+
+let timer = null;
+
+
+const scores = {
+
+  memory: {
+    name: "Working Memory",
+    score: 0
+  },
+
+  attention: {
+    name: "Selective Attention",
+    score: 0
+  },
+
+  inhibition: {
+    name: "Inhibition",
+    score: 0
+  },
+
+  flexibility: {
+    name: "Cognitive Flexibility",
+    score: 0
+  }
+
+};
+
+
+function showScreen(screen) {
+
+  home.classList.add("hidden");
+  gameScreen.classList.add("hidden");
+  profileScreen.classList.add("hidden");
+
+  screen.classList.remove("hidden");
+
+}
+
+
+function updateHeader() {
+
+  levelDisplay.textContent = level;
+
+  trialDisplay.textContent = trial;
+
+}
+
+
+function clearGame() {
+
+  clearTimeout(timer);
+
+  arena.innerHTML = "";
+
+  active = false;
+
+}
+
+
+function wait(ms) {
+
+  return new Promise(resolve => {
+
+    timer = setTimeout(resolve, ms);
+
+  });
+
+}
+
+
+/* =========================
+   START GAME
+========================= */
+
+
+function startGame(game) {
+
+  clearGame();
+
+  currentGame = game;
+
+  level = 1;
+
+  trial = 0;
+
+  correct = 0;
+
+  total = 0;
+
+  feedback.textContent = "";
+
+  const names = {
+
+    memory: "🧠 Working Memory",
+
+    attention: "👀 Selective Attention",
+
+    inhibition: "🚫 Inhibition",
+
+    flexibility: "🔄 Cognitive Flexibility"
+
+  };
+
+  gameTitle.textContent = names[game];
+
+  startButton.textContent = "เริ่มรอบ";
+
+  showScreen(gameScreen);
+
+  updateHeader();
+
+}
+
+
+/* =========================
+   NEXT TRIAL
+========================= */
+
+
+function nextTrial() {
+
+  trial++;
+
+  updateHeader();
+
+  if (trial > 8) {
+
+    finishGame();
+
+    return;
+
+  }
+
+  startButton.disabled = true;
+
+  if (currentGame === "memory") {
+
+    setupMemory();
+
+  }
+
+  if (currentGame === "attention") {
+
+    setupAttention();
+
+  }
+
+  if (currentGame === "inhibition") {
+
+    setupInhibition();
+
+  }
+
+  if (currentGame === "flexibility") {
+
+    setupFlexibility();
+
+  }
+
+}
+
+
+/* =========================
+   MEMORY
+========================= */
+
+
+async function setupMemory() {
+
+  clearGame();
+
+  sequence = [];
+
+  sequencePosition = 0;
+
+  const amount =
+    Math.min(3 + level, 8);
+
+  for (let i = 0; i < amount; i++) {
+
+    sequence.push(
+      Math.floor(Math.random() * 16)
+    );
+
+  }
+
+
+  arena.innerHTML =
+    '<div class="grid"></div>';
+
+  const grid =
+    arena.querySelector(".grid");
+
+
+  for (let i = 0; i < 16; i++) {
+
+    const button =
+      document.createElement("button");
+
+    button.className = "tile";
+
+    button.type = "button";
+
+    button.addEventListener(
+      "click",
+      () => selectMemory(i, button)
+    );
+
+    grid.appendChild(button);
+
+  }
+
+
+  instruction.textContent =
+    "จำช่องที่สว่างขึ้นตามลำดับ";
+
+
+  await wait(400);
+
+
+  for (const index of sequence) {
+
+    const button =
+      grid.children[index];
+
+    button.classList.add("active");
+
+    await wait(
+      Math.max(
+        260,
+        560 - level * 35
+      )
+    );
+
+    button.classList.remove("active");
+
+    await wait(120);
+
+  }
+
+
+  active = true;
+
+  instruction.textContent =
+    "แตะช่องตามลำดับที่จำได้";
+
+}
+
+
+function selectMemory(index, button) {
+
+  if (!active) return;
+
+  if (index === sequence[sequencePosition]) {
+
+    button.classList.add("correct");
+
+    setTimeout(
+      () => button.classList.remove("correct"),
+      150
+    );
+
+    sequencePosition++;
+
+    if (
+      sequencePosition ===
+      sequence.length
+    ) {
+
+      registerResult(true);
+
+    }
+
+  } else {
+
+    registerResult(false);
+
+  }
+
+}
+
+
+/* =========================
+   ATTENTION
+========================= */
+
+
+function setupAttention() {
+
+  clearGame();
+
+  const size =
+    Math.min(3 + level, 7);
+
+  const amount =
+    size * size;
+
+  const target = "●";
+
+  const distractor = "○";
+
+
+  const items =
+    Array.from(
+      {length: amount},
+      () =>
+        Math.random() < 0.15
+          ? target
+          : distractor
+    );
+
+
+  const targetIndex =
+    Math.floor(Math.random() * amount);
+
+  items[targetIndex] = target;
+
+
+  arena.innerHTML =
+    '<div class="grid"></div>';
+
+  const grid =
+    arena.querySelector(".grid");
+
+  grid.style.gridTemplateColumns =
+    `repeat(${size},1fr)`;
+
+
+  items.forEach((item,index) => {
+
+    const button =
+      document.createElement("button");
+
+    button.className = "tile";
+
+    button.type = "button";
+
+    button.textContent = item;
+
+    button.addEventListener(
+      "click",
+      () =>
+        registerResult(
+          index === targetIndex
+        )
+    );
+
+    grid.appendChild(button);
+
+  });
+
+
+  active = true;
+
+  instruction.textContent =
+    "หา ● แล้วแตะให้ถูก";
+
+}
+
+
+/* =========================
+   INHIBITION
+========================= */
+
+
+function setupInhibition() {
+
+  clearGame();
+
+  const isGo =
+    Math.random() < 0.65;
+
+
+  instruction.textContent =
+    isGo
+      ? "GO — กดปุ่มเมื่อเห็น 🔵"
+      : "NO-GO — ห้ามกดเมื่อเห็น 🔴";
+
+
+  arena.innerHTML = `
+
+    <button
+      id="stimulus"
+      class="tile"
+      style="
+        width:150px;
+        height:150px;
+        font-size:48px;
+      "
+    >
+      ${isGo ? "🔵" : "🔴"}
+    </button>
+
+  `;
+
+
+  const stimulus =
+    document.getElementById("stimulus");
+
+  active = true;
+
+
+  stimulus.addEventListener(
+    "click",
+    () => {
+
+      if (!active) return;
+
+      active = false;
+
+      registerResult(isGo);
+
+    }
+  );
+
+
+  timer =
+    setTimeout(
+      () => {
+
+        if (!active) return;
+
+        active = false;
+
+        registerResult(!isGo);
+
+      },
+      Math.max(
+        450,
+        900 - level * 45
+      )
+    );
+
+}
+
+
+/* =========================
+   FLEXIBILITY
+========================= */
+
+
+function setupFlexibility() {
+
+  clearGame();
+
+
+  const useNumberRule =
+    Math.random() < 0.5;
+
+
+  const number =
+    Math.floor(
+      Math.random() * 9
+    ) + 1;
+
+
+  const color =
+    Math.random() < 0.5
+      ? "น้ำเงิน"
+      : "แดง";
+
+
+  let answer;
+
+
+  if (useNumberRule) {
+
+    instruction.textContent =
+      "กฎ: เลขคี่ → ซ้าย | เลขคู่ → ขวา";
+
+    answer =
+      number % 2 === 1
+        ? "L"
+        : "R";
+
+  } else {
+
+    instruction.textContent =
+      "กฎ: น้ำเงิน → ซ้าย | แดง → ขวา";
+
+    answer =
+      color === "น้ำเงิน"
+        ? "L"
+        : "R";
+
+  }
+
+
+  const stimulus =
+    useNumberRule
+      ? number
+      : color;
+
+
+  arena.innerHTML = `
+
+    <div style="text-align:center">
+
+      <div
+        style="
+          font-size:42px;
+          font-weight:800;
+          margin-bottom:20px;
+        "
+      >
+        ${stimulus}
+      </div>
+
+      <div class="choice-grid">
+
+        <button
+          class="choice"
+          data-answer="L"
+        >
+          ← ซ้าย
+        </button>
+
+        <button
+          class="choice"
+          data-answer="R"
+        >
+          ขวา →
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  arena
+    .querySelectorAll(".choice")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          registerResult(
+            button.dataset.answer === answer
+          );
+
+        }
+      );
+
+    });
+
+
+  active = true;
+
+}
+
+
+/* =========================
+   RESULT
+========================= */
+
+
+function registerResult(isCorrect) {
+
+  if (!active) return;
+
+  active = false;
+
+  total++;
+
+
+  if (isCorrect) {
+
+    correct++;
+
+    feedback.textContent =
+      "✓ ถูกต้อง";
+
+
+    if (
+      correct / total > 0.75 &&
+      level < 8
+    ) {
+
+      level++;
+
+    }
+
+  } else {
+
+    feedback.textContent =
+      "✕ ลองใหม่";
+
+
+    if (level > 1) {
+
+      level--;
+
+    }
+
+  }
+
+
+  updateHeader();
+
+
+  setTimeout(
+    nextTrial,
+    450
+  );
+
+}
+
+
+/* =========================
+   FINISH
+========================= */
+
+
+function finishGame() {
+
+  clearGame();
+
+  const accuracy =
+    Math.round(
+      correct /
+      Math.max(total,1) *
+      100
+    );
+
+
+  scores[currentGame].score =
+    Math.max(
+      scores[currentGame].score,
+      accuracy
+    );
+
+
+  instruction.textContent =
+    "จบชุดเกม";
+
+  feedback.textContent =
+    `Accuracy ${accuracy}%`;
+
+
+  startButton.disabled = false;
+
+  startButton.textContent =
+    "เล่นอีกครั้ง";
+
+}
+
+
+/* =========================
+   PROFILE
+========================= */
+
+
+function showProfile() {
+
+  const container =
+    document.getElementById("scores");
+
+
+  container.innerHTML = "";
+
+
+  Object.values(scores).forEach(item => {
+
+    const row =
+      document.createElement("div");
+
+    row.className =
+      "score-row";
+
+
+    row.innerHTML = `
+
+      <div class="score-header">
+
+        <span>
+          ${item.name}
+        </span>
+
+        <b>
+          ${item.score}%
+        </b>
+
+      </div>
+
+      <div class="bar">
+
+        <div
+          class="bar-fill"
+          style="
+            width:${item.score}%
+          "
+        ></div>
+
+      </div>
+
+    `;
+
+
+    container.appendChild(row);
+
+  });
+
+
+  showScreen(profileScreen);
+
+}
+
+
+/* =========================
+   BUTTON EVENTS
+========================= */
+
+
+document
+  .querySelectorAll("[data-game]")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () =>
+        startGame(
+          button.dataset.game
+        )
+    );
+
+  });
+
+
+startButton.addEventListener(
+  "click",
+  () => {
+
+    if (trial >= 8) {
+
+      trial = 0;
+      correct = 0;
+      total = 0;
+      level = 1;
+
+      updateHeader();
+
+    }
+
+    nextTrial();
+
+  }
+);
+
+
+document
+  .getElementById("backButton")
+  .addEventListener(
+    "click",
+    () => {
+
+      clearGame();
+
+      showScreen(home);
+
+    }
+  );
+
+
+document
+  .getElementById("profileButton")
+  .addEventListener(
+    "click",
+    showProfile
+  );
+
+
+document
+  .getElementById("homeButton")
+  .addEventListener(
+    "click",
+    () => showScreen(home)
+  );
+
+</script>
+
+</body>
+</html>
